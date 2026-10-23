@@ -2,6 +2,18 @@
 
 A full-stack MERN (MongoDB, Express, React, Node.js) platform featuring an SM-2 spaced repetition revision engine, subject & topic tracking, interactive study focus timer, exams countdown, automated goal tracking, academic notes, and real-time retention analytics.
 
+## 🚀 Live Deployment
+
+- **Live URL:** [https://mern-end-term-lemon.vercel.app](https://mern-end-term-lemon.vercel.app)
+- **Login Portal:** [https://mern-end-term-lemon.vercel.app/login](https://mern-end-term-lemon.vercel.app/login)
+
+### Quick Demo Access
+- **Email:** `student@studyflow.com`
+- **Password:** `password123`
+*(Or use the 1-click **"Use Demo Student (Alex Rivera)"** button directly on the login screen)*
+
+---
+
 ## Features
 
 - **Authentication & Security**: JWT session cookies and Bearer tokens with role-based access. Includes a 1-click Demo Student login button.
@@ -27,6 +39,7 @@ A full-stack MERN (MongoDB, Express, React, Node.js) platform featuring an SM-2 
 │   ├── routes/         # REST API endpoints
 │   ├── seed/           # Seed script with demo data
 │   └── services/       # Spaced repetition, mastery, streak, and goal engines
+├── vercel.json         # Vercel multi-service routing configuration
 └── .gitignore          # Root Git ignore rules
 ```
 
