@@ -60,6 +60,12 @@ class MemoryStore {
     }
     return this.data[collectionKey];
   }
+
+  setCollection(name, items) {
+    const collectionKey = name.toLowerCase();
+    this.data[collectionKey] = items;
+    this.save();
+  }
 }
 
 const memoryDb = new MemoryStore();

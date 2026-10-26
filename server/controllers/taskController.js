@@ -186,7 +186,7 @@ const updateTask = async (req, res) => {
     }
 
     // Track assignment change
-    if (assigneeId !== undefined && assigneeId !== (existingTask.assignee?._id || existingTask.assigneeId)) {
+    if (assigneeId !== undefined && String(assigneeId || '') !== String(existingTask.assignee?._id || existingTask.assignee || '')) {
       const assignedUser = assigneeId ? await UserRepository.findById(assigneeId) : null;
       await ActivityRepository.log({
         projectId,
@@ -220,7 +220,8 @@ const deleteTask = async (req, res) => {
     const projectId = task.project;
     const memberRole = await ProjectMemberRepository.isMember(projectId, userId);
 
-    const isCreator = (task.creator?._id || task.creatorId) === userId;
+    const creatorId = task.creator?._id || task.creator?.id || task.creatorId || task.creator;
+    const isCreator = String(creatorId) === String(userId);
     const isOwnerOrAdmin = memberRole === 'OWNER' || memberRole === 'ADMIN';
 
     if (!isCreator && !isOwnerOrAdmin) {

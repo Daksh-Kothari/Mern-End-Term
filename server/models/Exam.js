@@ -113,6 +113,21 @@ class ExamRepository {
     }
     return false;
   }
+
+  static async deleteBySubject(subjectId) {
+    if (isMongoConnected()) {
+      await ExamMongo.deleteMany({ subject: subjectId });
+      return true;
+    }
+
+    const collection = memoryDb.getCollection('exams');
+    const remaining = collection.filter(e => {
+      const sId = e.subject?._id || e.subject?.id || e.subject;
+      return String(sId) !== String(subjectId);
+    });
+    memoryDb.setCollection('exams', remaining);
+    return true;
+  }
 }
 
 module.exports = { ExamMongo, ExamRepository };

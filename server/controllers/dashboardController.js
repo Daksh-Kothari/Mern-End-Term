@@ -42,7 +42,7 @@ const getDashboardStats = async (req, res) => {
     // 3. Filter user specific metrics
     const userAssignedTasks = allProjectTasks.filter(t => {
       const assigneeId = t.assignee?._id || t.assigneeId || t.assignee;
-      return assigneeId === userId;
+      return assigneeId && String(assigneeId) === String(userId);
     });
 
     const activeProjectsCount = userProjects.filter(p => p.status === 'ACTIVE').length;

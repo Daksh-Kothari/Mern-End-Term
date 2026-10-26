@@ -185,6 +185,21 @@ class TopicRepository {
     }
     return false;
   }
+
+  static async deleteBySubject(subjectId) {
+    if (isMongoConnected()) {
+      await TopicMongo.deleteMany({ subject: subjectId });
+      return true;
+    }
+
+    const collection = memoryDb.getCollection('topics');
+    const remaining = collection.filter(t => {
+      const sId = t.subject?._id || t.subject?.id || t.subject;
+      return String(sId) !== String(subjectId);
+    });
+    memoryDb.setCollection('topics', remaining);
+    return true;
+  }
 }
 
 module.exports = { TopicMongo, TopicRepository };

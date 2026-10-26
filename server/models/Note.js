@@ -100,6 +100,21 @@ class NoteRepository {
     }
     return false;
   }
+
+  static async deleteBySubject(subjectId) {
+    if (isMongoConnected()) {
+      await NoteMongo.deleteMany({ subject: subjectId });
+      return true;
+    }
+
+    const collection = memoryDb.getCollection('notes');
+    const remaining = collection.filter(n => {
+      const sId = n.subject?._id || n.subject?.id || n.subject;
+      return String(sId) !== String(subjectId);
+    });
+    memoryDb.setCollection('notes', remaining);
+    return true;
+  }
 }
 
 module.exports = { NoteMongo, NoteRepository };

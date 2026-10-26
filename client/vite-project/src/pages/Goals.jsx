@@ -194,8 +194,7 @@ const Goals = () => {
 
                 <div className="space-y-3 pt-3 border-t border-slate-800">
                   <ProgressBar
-                    value={goal.currentValue || 0}
-                    max={goal.targetValue}
+                    value={goal.progressPercentage || 0}
                     label="Completion Progress"
                     size="sm"
                   />

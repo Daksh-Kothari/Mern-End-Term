@@ -19,12 +19,15 @@ class GoalEngine {
 
     switch (goal.goalType) {
       case 'DAILY_STUDY_TIME': {
-        const todayStr = now.toISOString().split('T')[0];
+        const isSameDay = (d1, d2) => {
+          const a = new Date(d1);
+          const b = new Date(d2);
+          return a.getFullYear() === b.getFullYear() &&
+                 a.getMonth() === b.getMonth() &&
+                 a.getDate() === b.getDate();
+        };
         currentValue = studySessions
-          .filter(s => {
-            const dateStr = new Date(s.createdAt || s.startTime).toISOString().split('T')[0];
-            return dateStr === todayStr;
-          })
+          .filter(s => isSameDay(s.createdAt || s.startTime, now))
           .reduce((sum, s) => sum + (s.durationMinutes || 0), 0);
         break;
       }

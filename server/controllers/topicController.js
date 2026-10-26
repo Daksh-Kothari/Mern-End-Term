@@ -1,6 +1,10 @@
-const { TopicRepository } = require('../models/Topic');
+const { TopicRepository, TopicMongo } = require('../models/Topic');
 const { SubjectRepository } = require('../models/Subject');
 const { ActivityRepository } = require('../models/Activity');
+const { RevisionRecordMongo } = require('../models/RevisionRecord');
+const { StudySessionMongo } = require('../models/StudySession');
+const { NoteMongo } = require('../models/Note');
+const { isMongoConnected, memoryDb } = require('../config/db');
 const PriorityEngine = require('../services/priorityEngine');
 
 const createTopic = async (req, res) => {
@@ -174,7 +178,29 @@ const deleteTopic = async (req, res) => {
       return res.status(403).json({ message: 'Access denied: Private topic' });
     }
 
-    await TopicRepository.delete(topicId);
+    // Cascade delete topic-related records
+    if (isMongoConnected()) {
+      await Promise.all([
+        TopicRepository.delete(topicId),
+        RevisionRecordMongo.deleteMany({ topic: topicId }),
+        StudySessionMongo.deleteMany({ topic: topicId }),
+        NoteMongo.deleteMany({ topic: topicId })
+      ]);
+    } else {
+      await TopicRepository.delete(topicId);
+      memoryDb.setCollection('revisionrecords', memoryDb.getCollection('revisionrecords').filter(r => {
+        const tId = r.topic?._id || r.topic?.id || r.topic;
+        return String(tId) !== String(topicId);
+      }));
+      memoryDb.setCollection('studysessions', memoryDb.getCollection('studysessions').filter(s => {
+        const tId = s.topic?._id || s.topic?.id || s.topic;
+        return String(tId) !== String(topicId);
+      }));
+      memoryDb.setCollection('notes', memoryDb.getCollection('notes').filter(n => {
+        const tId = n.topic?._id || n.topic?.id || n.topic;
+        return String(tId) !== String(topicId);
+      }));
+    }
 
     await ActivityRepository.log({
       userId,
@@ -182,7 +208,7 @@ const deleteTopic = async (req, res) => {
       details: { topicTitle: topic.title }
     });
 
-    res.json({ message: 'Topic deleted successfully' });
+    res.json({ message: 'Topic and associated records deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete topic', error: error.message });
   }

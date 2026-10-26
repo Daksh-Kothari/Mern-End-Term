@@ -151,7 +151,7 @@ const addMember = async (req, res) => {
 
     const targetUser = await UserRepository.findByEmail(email);
     if (!targetUser) {
-      return res.status(444).status(404).json({ message: `User with email "${email}" not found. Ensure they have registered an account.` });
+      return res.status(404).json({ message: `User with email "${email}" not found. Ensure they have registered an account.` });
     }
 
     const targetUserId = targetUser._id || targetUser.id;
@@ -191,8 +191,8 @@ const removeMember = async (req, res) => {
     }
 
     const project = await ProjectRepository.findById(projectId);
-    const ownerId = project.owner._id || project.owner.id || project.owner;
-    if (targetUserId === ownerId) {
+    const ownerId = project.owner?._id || project.owner?.id || project.ownerId || project.owner;
+    if (String(targetUserId) === String(ownerId)) {
       return res.status(400).json({ message: 'The project owner cannot be removed from the project.' });
     }
 

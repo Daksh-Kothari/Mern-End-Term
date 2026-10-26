@@ -108,6 +108,21 @@ class StudySessionRepository {
     const list = collection.filter(s => s.topic === topicId || (s.topic && s.topic._id === topicId));
     return list.map(s => ({ ...s, _id: s._id || s.id, id: s._id || s.id }));
   }
+
+  static async deleteBySubject(subjectId) {
+    if (isMongoConnected()) {
+      await StudySessionMongo.deleteMany({ subject: subjectId });
+      return true;
+    }
+
+    const collection = memoryDb.getCollection('studysessions');
+    const remaining = collection.filter(s => {
+      const sId = s.subject?._id || s.subject?.id || s.subject;
+      return String(sId) !== String(subjectId);
+    });
+    memoryDb.setCollection('studysessions', remaining);
+    return true;
+  }
 }
 
 module.exports = { StudySessionMongo, StudySessionRepository };

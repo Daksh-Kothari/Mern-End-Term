@@ -131,7 +131,21 @@ const deleteExam = async (req, res) => {
       return res.status(403).json({ message: 'Access denied: Private exam' });
     }
 
+    const subjectId = exam.subject?._id || exam.subject?.id || exam.subject;
     await ExamRepository.delete(examId);
+
+    // If subject was associated, clear its examDate if no other exams exist for it
+    if (subjectId) {
+      const remainingExams = await ExamRepository.findByUser(userId);
+      const otherExamForSubject = remainingExams.find(e => {
+        const sId = e.subject?._id || e.subject?.id || e.subject;
+        return String(sId) === String(subjectId) && String(e._id || e.id) !== String(examId);
+      });
+      if (!otherExamForSubject) {
+        await SubjectRepository.update(subjectId, { examDate: null });
+      }
+    }
+
     res.json({ message: 'Exam deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete exam', error: error.message });

@@ -79,6 +79,21 @@ class RevisionRecordRepository {
     const list = collection.filter(r => r.user === userId || (r.user && r.user._id === userId));
     return list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, limit);
   }
+
+  static async deleteBySubject(subjectId) {
+    if (isMongoConnected()) {
+      await RevisionRecordMongo.deleteMany({ subject: subjectId });
+      return true;
+    }
+
+    const collection = memoryDb.getCollection('revisionrecords');
+    const remaining = collection.filter(r => {
+      const sId = r.subject?._id || r.subject?.id || r.subject;
+      return String(sId) !== String(subjectId);
+    });
+    memoryDb.setCollection('revisionrecords', remaining);
+    return true;
+  }
 }
 
 module.exports = { RevisionRecordMongo, RevisionRecordRepository };

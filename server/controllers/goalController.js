@@ -97,12 +97,13 @@ const updateGoal = async (req, res) => {
     }
 
     const { title, targetValue, endDate, status } = req.body;
-    const updated = await StudyGoalRepository.update(goalId, {
-      title: title ? title.trim() : undefined,
-      targetValue: targetValue ? Number(targetValue) : undefined,
-      endDate: endDate ? new Date(endDate) : undefined,
-      status
-    });
+    const updates = {};
+    if (title !== undefined) updates.title = title.trim();
+    if (targetValue !== undefined) updates.targetValue = Number(targetValue);
+    if (endDate !== undefined) updates.endDate = endDate ? new Date(endDate) : null;
+    if (status !== undefined) updates.status = status;
+
+    const updated = await StudyGoalRepository.update(goalId, updates);
 
     res.json({ message: 'Goal updated successfully', goal: updated });
   } catch (error) {

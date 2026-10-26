@@ -1,5 +1,9 @@
 const { SubjectRepository } = require('../models/Subject');
 const { TopicRepository } = require('../models/Topic');
+const { ExamRepository } = require('../models/Exam');
+const { StudySessionRepository } = require('../models/StudySession');
+const { RevisionRecordRepository } = require('../models/RevisionRecord');
+const { NoteRepository } = require('../models/Note');
 const { ActivityRepository } = require('../models/Activity');
 
 const createSubject = async (req, res) => {
@@ -17,9 +21,21 @@ const createSubject = async (req, res) => {
       description: description ? description.trim() : '',
       color: color || '#6366F1',
       icon: icon || 'BookOpen',
-      examDate: examDate || null,
-      targetDate: targetDate || null
+      examDate: examDate ? new Date(examDate) : null,
+      targetDate: targetDate ? new Date(targetDate) : null
     });
+
+    // Automatically schedule exam if examDate was provided
+    if (examDate) {
+      await ExamRepository.create({
+        user: userId,
+        subject: subject._id || subject.id,
+        name: `${subject.name.trim()} Exam`,
+        date: new Date(examDate),
+        description: `Scheduled exam for ${subject.name.trim()}`,
+        importance: 'HIGH'
+      });
+    }
 
     await ActivityRepository.log({
       userId,
@@ -103,15 +119,46 @@ const updateSubject = async (req, res) => {
     }
 
     const { name, description, color, icon, examDate, targetDate, status } = req.body;
-    const updated = await SubjectRepository.update(subjectId, {
-      name,
-      description,
-      color,
-      icon,
-      examDate: examDate ? new Date(examDate) : null,
-      targetDate: targetDate ? new Date(targetDate) : null,
-      status
-    });
+    const updates = {};
+    if (name !== undefined) updates.name = name;
+    if (description !== undefined) updates.description = description;
+    if (color !== undefined) updates.color = color;
+    if (icon !== undefined) updates.icon = icon;
+    if (examDate !== undefined) updates.examDate = examDate ? new Date(examDate) : null;
+    if (targetDate !== undefined) updates.targetDate = targetDate ? new Date(targetDate) : null;
+    if (status !== undefined) updates.status = status;
+
+    const updated = await SubjectRepository.update(subjectId, updates);
+
+    // Synchronize Exam if examDate or name was changed
+    if (examDate !== undefined) {
+      const userExams = await ExamRepository.findByUser(userId);
+      const linkedExam = userExams.find(e => {
+        const sId = e.subject?._id || e.subject?.id || e.subject;
+        return String(sId) === String(subjectId);
+      });
+
+      if (examDate) {
+        if (linkedExam) {
+          await ExamRepository.update(linkedExam._id || linkedExam.id, {
+            name: name !== undefined ? `${name.trim()} Exam` : linkedExam.name,
+            date: new Date(examDate)
+          });
+        } else {
+          await ExamRepository.create({
+            user: userId,
+            subject: subjectId,
+            name: `${(name || updated.name).trim()} Exam`,
+            date: new Date(examDate),
+            description: `Scheduled exam for ${(name || updated.name).trim()}`,
+            importance: 'HIGH'
+          });
+        }
+      } else if (examDate === null && linkedExam) {
+        // If examDate was explicitly cleared, remove the corresponding exam
+        await ExamRepository.delete(linkedExam._id || linkedExam.id);
+      }
+    }
 
     await ActivityRepository.log({
       userId,
@@ -140,7 +187,15 @@ const deleteSubject = async (req, res) => {
       return res.status(403).json({ message: 'Access denied: Private subject' });
     }
 
-    await SubjectRepository.delete(subjectId);
+    // Cascading delete: delete all topics, exams, study sessions, revision records, and notes for this subject
+    await Promise.all([
+      TopicRepository.deleteBySubject(subjectId),
+      ExamRepository.deleteBySubject(subjectId),
+      StudySessionRepository.deleteBySubject(subjectId),
+      RevisionRecordRepository.deleteBySubject(subjectId),
+      NoteRepository.deleteBySubject(subjectId),
+      SubjectRepository.delete(subjectId)
+    ]);
 
     await ActivityRepository.log({
       userId,
@@ -148,7 +203,7 @@ const deleteSubject = async (req, res) => {
       details: { subjectName: existing.name }
     });
 
-    res.json({ message: 'Subject deleted successfully' });
+    res.json({ message: 'Subject and all associated topics and exams deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete subject', error: error.message });
   }

@@ -122,6 +122,28 @@
       },
       "createdAt": "2026-10-23T14:05:07.348Z",
       "updatedAt": "2026-10-23T14:05:07.348Z"
+    },
+    {
+      "_id": "05f54e16082f103a2f5fff5a",
+      "id": "05f54e16082f103a2f5fff5a",
+      "user": "6adf3c24c48ef3d6b1df7024",
+      "action": "SUBJECT_CREATED",
+      "details": {
+        "subjectName": "Direct Test Physics"
+      },
+      "createdAt": "2026-10-26T12:02:26.369Z",
+      "updatedAt": "2026-10-26T12:02:26.369Z"
+    },
+    {
+      "_id": "cfbf8b56fce7489d4dd61655",
+      "id": "cfbf8b56fce7489d4dd61655",
+      "user": "6adf3c24c48ef3d6b1df7024",
+      "action": "SUBJECT_DELETED",
+      "details": {
+        "subjectName": "Direct Test Physics"
+      },
+      "createdAt": "2026-10-26T12:02:26.375Z",
+      "updatedAt": "2026-10-26T12:02:26.375Z"
     }
   ],
   "aigenerations": [],
