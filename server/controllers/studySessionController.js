@@ -30,8 +30,8 @@ const createStudySession = async (req, res) => {
       return res.status(404).json({ message: 'Topic not found' });
     }
 
-    const tUserId = topic.user._id || topic.user.id || topic.user;
-    if (tUserId !== userId) {
+    const tUserId = topic.user?._id || topic.user?.id || topic.user;
+    if (String(tUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Topic belongs to another user.' });
     }
 

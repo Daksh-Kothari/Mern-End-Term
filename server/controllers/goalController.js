@@ -88,8 +88,8 @@ const updateGoal = async (req, res) => {
       return res.status(404).json({ message: 'Goal not found' });
     }
 
-    const gUserId = goal.user._id || goal.user.id || goal.user;
-    if (gUserId !== userId) {
+    const gUserId = goal.user?._id || goal.user?.id || goal.user;
+    if (String(gUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private goal' });
     }
 
@@ -117,8 +117,8 @@ const deleteGoal = async (req, res) => {
       return res.status(404).json({ message: 'Goal not found' });
     }
 
-    const gUserId = goal.user._id || goal.user.id || goal.user;
-    if (gUserId !== userId) {
+    const gUserId = goal.user?._id || goal.user?.id || goal.user;
+    if (String(gUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private goal' });
     }
 

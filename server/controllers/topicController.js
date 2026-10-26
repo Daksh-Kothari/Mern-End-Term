@@ -20,8 +20,8 @@ const createTopic = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found.' });
     }
 
-    const subUserId = subject.user._id || subject.user.id || subject.user;
-    if (subUserId !== userId) {
+    const subUserId = subject.user?._id || subject.user?.id || subject.user;
+    if (String(subUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Subject belongs to another user.' });
     }
 
@@ -93,8 +93,8 @@ const getTopicById = async (req, res) => {
       return res.status(404).json({ message: 'Topic not found' });
     }
 
-    const tUserId = topic.user._id || topic.user.id || topic.user;
-    if (tUserId !== userId) {
+    const tUserId = topic.user?._id || topic.user?.id || topic.user;
+    if (String(tUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private topic' });
     }
 
@@ -114,8 +114,8 @@ const updateTopic = async (req, res) => {
       return res.status(404).json({ message: 'Topic not found' });
     }
 
-    const tUserId = topic.user._id || topic.user.id || topic.user;
-    if (tUserId !== userId) {
+    const tUserId = topic.user?._id || topic.user?.id || topic.user;
+    if (String(tUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private topic' });
     }
 
@@ -169,8 +169,8 @@ const deleteTopic = async (req, res) => {
       return res.status(404).json({ message: 'Topic not found' });
     }
 
-    const tUserId = topic.user._id || topic.user.id || topic.user;
-    if (tUserId !== userId) {
+    const tUserId = topic.user?._id || topic.user?.id || topic.user;
+    if (String(tUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private topic' });
     }
 

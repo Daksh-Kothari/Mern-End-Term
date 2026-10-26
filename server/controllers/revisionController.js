@@ -74,13 +74,13 @@ const completeRevision = async (req, res) => {
       return res.status(404).json({ message: 'Topic not found' });
     }
 
-    const tUserId = topic.user._id || topic.user.id || topic.user;
-    if (tUserId !== userId) {
+    const tUserId = topic.user?._id || topic.user?.id || topic.user;
+    if (String(tUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Topic belongs to another user.' });
     }
 
     const duration = Number(durationMinutes) > 0 ? Number(durationMinutes) : 15;
-    const sId = topic.subject?._id || topic.subject;
+    const sId = topic.subject?._id || topic.subject?.id || topic.subject;
     const subject = await SubjectRepository.findById(sId);
 
     // 1. Create StudySession

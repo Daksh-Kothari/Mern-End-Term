@@ -23,8 +23,8 @@ const createExam = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found.' });
     }
 
-    const subUserId = subject.user._id || subject.user.id || subject.user;
-    if (subUserId !== userId) {
+    const subUserId = subject.user?._id || subject.user?.id || subject.user;
+    if (String(subUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Subject belongs to another user.' });
     }
 
@@ -94,8 +94,8 @@ const updateExam = async (req, res) => {
       return res.status(404).json({ message: 'Exam not found' });
     }
 
-    const eUserId = exam.user._id || exam.user.id || exam.user;
-    if (eUserId !== userId) {
+    const eUserId = exam.user?._id || exam.user?.id || exam.user;
+    if (String(eUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private exam' });
     }
 
@@ -123,8 +123,8 @@ const deleteExam = async (req, res) => {
       return res.status(404).json({ message: 'Exam not found' });
     }
 
-    const eUserId = exam.user._id || exam.user.id || exam.user;
-    if (eUserId !== userId) {
+    const eUserId = exam.user?._id || exam.user?.id || exam.user;
+    if (String(eUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private exam' });
     }
 

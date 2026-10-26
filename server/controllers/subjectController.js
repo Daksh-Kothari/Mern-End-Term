@@ -71,8 +71,8 @@ const getSubjectById = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found' });
     }
 
-    const subUserId = subject.user._id || subject.user.id || subject.user;
-    if (subUserId !== userId) {
+    const subUserId = subject.user?._id || subject.user?.id || subject.user;
+    if (String(subUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private subject' });
     }
 
@@ -94,8 +94,8 @@ const updateSubject = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found' });
     }
 
-    const subUserId = existing.user._id || existing.user.id || existing.user;
-    if (subUserId !== userId) {
+    const subUserId = existing.user?._id || existing.user?.id || existing.user;
+    if (String(subUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private subject' });
     }
 
@@ -132,8 +132,8 @@ const deleteSubject = async (req, res) => {
       return res.status(404).json({ message: 'Subject not found' });
     }
 
-    const subUserId = existing.user._id || existing.user.id || existing.user;
-    if (subUserId !== userId) {
+    const subUserId = existing.user?._id || existing.user?.id || existing.user;
+    if (String(subUserId) !== String(userId)) {
       return res.status(403).json({ message: 'Access denied: Private subject' });
     }
 

@@ -7,5 +7,6 @@ router.use(protect);
 
 router.get('/queue', getRevisionQueue);
 router.post('/:topicId/complete', completeRevision);
+router.post('/complete/:topicId', completeRevision);
 
 module.exports = router;

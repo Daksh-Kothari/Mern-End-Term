@@ -19,7 +19,7 @@ const RevisionModal = ({ isOpen, onClose, topic, onRevisionComplete }) => {
       setLoading(true);
       setError('');
       const topicId = topic._id || topic.id;
-      const res = await api.post(`/revisions/complete/${topicId}`, {
+      const res = await api.post(`/revisions/${topicId}/complete`, {
         recallRating,
         durationMinutes: Number(durationMinutes) || 15,
         notes
