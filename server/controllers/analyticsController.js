@@ -56,9 +56,13 @@ const getDashboardAnalytics = async (req, res) => {
     // 5. Weak Topics Diagnostic Analysis
     const weakTopicsList = [];
     for (const topic of topics) {
-      const topicRevisions = revisionRecords.filter(r => (r.topic === topic._id || r.topic === topic.id));
-      const sId = topic.subject?._id || topic.subject;
-      const sub = subjects.find(s => (s._id === sId || s.id === sId));
+      const topicId = String(topic._id || topic.id);
+      const topicRevisions = revisionRecords.filter(r => {
+        const rTopic = String(r.topic?._id || r.topic?.id || r.topic);
+        return rTopic === topicId;
+      });
+      const sId = String(topic.subject?._id || topic.subject?.id || topic.subject);
+      const sub = subjects.find(s => String(s._id || s.id) === sId);
 
       const analysis = WeakTopicEngine.analyzeTopic(topic, topicRevisions, sub);
       if (analysis.isWeak) {
@@ -73,8 +77,8 @@ const getDashboardAnalytics = async (req, res) => {
 
     // 6. Weakest Subjects
     const subjectStats = subjects.map(sub => {
-      const subId = sub._id || sub.id;
-      const subTopics = topics.filter(t => (t.subject?._id || t.subject) === subId);
+      const subId = String(sub._id || sub.id);
+      const subTopics = topics.filter(t => String(t.subject?._id || t.subject?.id || t.subject) === subId);
       const subMastery = subTopics.length > 0 ? Math.round(subTopics.reduce((sum, t) => sum + (t.masteryScore || 0), 0) / subTopics.length) : 0;
       return {
         subject: sub,
@@ -87,10 +91,13 @@ const getDashboardAnalytics = async (req, res) => {
     // 7. Upcoming Exams (next 30 days)
     const upcomingExams = exams
       .filter(e => new Date(e.date) >= now)
-      .map(e => ({
-        ...e,
-        daysRemaining: Math.ceil((new Date(e.date) - now) / (1000 * 60 * 60 * 24))
-      }))
+      .map(e => {
+        const doc = e.toObject ? e.toObject() : e;
+        return {
+          ...doc,
+          daysRemaining: Math.ceil((new Date(doc.date) - now) / (1000 * 60 * 60 * 24))
+        };
+      })
       .slice(0, 5);
 
     res.json({

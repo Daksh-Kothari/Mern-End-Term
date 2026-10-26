@@ -22,7 +22,8 @@ const getRevisionQueue = async (req, res) => {
     const upcoming = [];
     const recommended = [];
 
-    allTopics.forEach(topic => {
+    allTopics.forEach(rawTopic => {
+      const topic = rawTopic.toObject ? rawTopic.toObject() : rawTopic;
       const nextDate = topic.nextRevisionDate ? new Date(topic.nextRevisionDate) : null;
       const mastery = topic.masteryScore || 0;
       const importance = (topic.importance || 'MEDIUM').toUpperCase();

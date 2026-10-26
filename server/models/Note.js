@@ -87,8 +87,8 @@ class NoteRepository {
 
   static async delete(id, userId) {
     if (isMongoConnected()) {
-      await NoteMongo.deleteOne({ _id: id, user: userId });
-      return true;
+      const result = await NoteMongo.deleteOne({ _id: id, user: userId });
+      return result.deletedCount > 0;
     }
 
     const collection = memoryDb.getCollection('notes');

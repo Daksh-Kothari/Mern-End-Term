@@ -47,8 +47,11 @@ const getSubjects = async (req, res) => {
       const masteredTopics = topics.filter(t => t.completionStatus === 'MASTERED' || t.masteryScore >= 80).length;
       const totalMastery = totalTopics > 0 ? Math.round(topics.reduce((sum, t) => sum + (t.masteryScore || 0), 0) / totalTopics) : 0;
       
+      const doc = sub.toObject ? sub.toObject() : sub;
       return {
-        ...sub,
+        ...doc,
+        _id: doc._id || doc.id,
+        id: doc._id || doc.id,
         totalTopics,
         masteredTopics,
         averageMastery: totalMastery

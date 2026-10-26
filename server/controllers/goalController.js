@@ -64,8 +64,11 @@ const getGoals = async (req, res) => {
         });
       }
 
+      const doc = goal.toObject ? goal.toObject() : goal;
       return {
-        ...goal,
+        ...doc,
+        _id: doc._id || doc.id,
+        id: doc._id || doc.id,
         currentValue: evalResult.currentValue,
         progressPercentage: evalResult.progressPercentage,
         status: evalResult.status

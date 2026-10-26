@@ -15,6 +15,7 @@ router.post('/', createSubject);
 router.get('/', getSubjects);
 router.get('/:id', getSubjectById);
 router.patch('/:id', updateSubject);
+router.put('/:id', updateSubject);
 router.delete('/:id', deleteSubject);
 
 module.exports = router;

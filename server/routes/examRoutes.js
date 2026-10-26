@@ -8,6 +8,7 @@ router.use(protect);
 router.post('/', createExam);
 router.get('/', getExams);
 router.patch('/:id', updateExam);
+router.put('/:id', updateExam);
 router.delete('/:id', deleteExam);
 
 module.exports = router;

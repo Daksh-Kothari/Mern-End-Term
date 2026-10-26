@@ -8,6 +8,7 @@ router.use(protect);
 router.post('/', createGoal);
 router.get('/', getGoals);
 router.patch('/:id', updateGoal);
+router.put('/:id', updateGoal);
 router.delete('/:id', deleteGoal);
 
 module.exports = router;

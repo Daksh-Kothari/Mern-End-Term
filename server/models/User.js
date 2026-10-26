@@ -92,9 +92,14 @@ class UserRepository {
   }
 
   static sanitize(user) {
-    const copy = { ...user };
-    delete copy.password;
-    return copy;
+    if (!user) return null;
+    const obj = user.toObject ? user.toObject() : { ...user };
+    delete obj.password;
+    return {
+      ...obj,
+      _id: obj._id || obj.id,
+      id: obj._id || obj.id
+    };
   }
 
   static wrapDoc(doc) {

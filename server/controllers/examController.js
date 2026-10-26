@@ -68,8 +68,11 @@ const getExams = async (req, res) => {
       const weakTopicsCount = topics.filter(t => (t.masteryScore || 0) < 60).length;
       const dueRevisionsCount = topics.filter(t => t.nextRevisionDate && new Date(t.nextRevisionDate) <= now).length;
 
+      const doc = exam.toObject ? exam.toObject() : exam;
       return {
-        ...exam,
+        ...doc,
+        _id: doc._id || doc.id,
+        id: doc._id || doc.id,
         daysRemaining,
         subjectMastery: totalMastery,
         totalTopics,
