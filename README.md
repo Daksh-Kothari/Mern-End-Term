@@ -4,8 +4,8 @@ A full-stack MERN (MongoDB, Express, React, Node.js) platform featuring an SM-2 
 
 ## 🚀 Live Deployment
 
-- **Live URL:** [https://mern-end-term-lemon.vercel.app](https://mern-end-term-lemon.vercel.app)
-- **Login Portal:** [https://mern-end-term-lemon.vercel.app/login](https://mern-end-term-lemon.vercel.app/login)
+- **Live URL:** [[https://mern-end-term-lemon.vercel.app]([https://study-flow-orpin-kappa.vercel.app/)](https://mern-end-term-lemon.vercel.app](https://study-flow-orpin-kappa.vercel.app/))
+- **Login Portal:** [[https://mern-end-term-lemon.vercel.app/login]](https://study-flow-orpin-kappa.vercel.app/login)([https://mern-end-term-lemon.vercel.app/login](https://study-flow-orpin-kappa.vercel.app/login))
 
 ### Quick Demo Access
 - **Email:** `student@studyflow.com`
