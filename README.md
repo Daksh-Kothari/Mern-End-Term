@@ -4,7 +4,7 @@ A full-stack MERN (MongoDB, Express, React, Node.js) platform featuring an SM-2 
 
 ## 🚀 Live Deployment
 
-- **Live URL:** [[(https://study-flow-orpin-kappa.vercel.app/register)]([[https://study-flow-orpin-kappa.vercel.app/register]])
+- **Live URL:** [[(https://study-flow-orpin-kappa.vercel.app/register)]([https://study-flow-orpin-kappa.vercel.app/register])
 
 ### Quick Demo Access
 - **Email:** `student@studyflow.com`
